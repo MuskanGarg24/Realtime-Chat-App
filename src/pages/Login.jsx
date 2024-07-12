@@ -1,9 +1,11 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { auth } from "../firebase";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { useNavigate, Link, Navigate } from "react-router-dom";
+import { doSignInWithEmailAndPassword } from "../firebase/auth";
+import { useAuth } from "../context/authContext";
 
 const Login = () => {
+  const { userLoggedIn } = useAuth();
+
   const [data, setData] = useState({
     email: "",
     password: "",
@@ -18,21 +20,21 @@ const Login = () => {
       return setError("All fields are required");
     }
     try {
-      const response = await signInWithEmailAndPassword(
-        auth,
+      const response = await doSignInWithEmailAndPassword(
         data.email,
         data.password
       );
       console.log(response);
       navigate("/");
-      setData({ email: "", password: "" });
     } catch (error) {
       setError(error.message);
+      console.log(error);
     }
   };
 
   return (
     <div className="w-[30vw] mx-auto">
+      {userLoggedIn && <Navigate to="/" replace={true} />}
       <div>
         <h1>Sign In</h1>
       </div>
@@ -83,7 +85,7 @@ const Login = () => {
       {error && <p className="text-red-700">{error}</p>}
       <div>
         <p>
-          Don't have an account? <a href="/register">Sign Up</a>
+          Don't have an account? <Link to="/register">Sign Up</Link>
         </p>
       </div>
     </div>

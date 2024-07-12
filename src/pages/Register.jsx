@@ -1,8 +1,10 @@
 import React, { useState } from "react";
-import { auth } from "../firebase";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { Link, useNavigate } from "react-router-dom";
+import { doCreateUserWithEmailAndPassword } from "../firebase/auth";
 
 const Register = () => {
+  const navigate = useNavigate();
+
   const [data, setData] = useState({
     name: "",
     email: "",
@@ -16,13 +18,12 @@ const Register = () => {
       return setError("All fields are required");
     }
     try {
-      const response = await createUserWithEmailAndPassword(
-        auth,
+      const response = await doCreateUserWithEmailAndPassword(
         data.email,
         data.password
       );
       console.log(response);
-      setData({ name: "", email: "", password: "" });
+      navigate("/");
     } catch (error) {
       setError(error.message);
     }
@@ -98,7 +99,7 @@ const Register = () => {
       {error && <p className="text-red-700">{error}</p>}
       <div>
         <p>
-          Already have an account? <a href="/login">Login</a>
+          Already have an account? <Link to="/login">Login</Link>
         </p>
       </div>
     </div>
