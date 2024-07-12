@@ -1,44 +1,29 @@
 import React from "react";
 import ConversationItem from "./ConversationItem";
-const Conversation = () => {
-  const data = [
-    {
-      name: "Rey Jhon",
-      time: "just now",
-      message: "Hey there! Are you finish creating the chat app?",
-      active: true,
-    },
-    {
-      name: "Cherry Ann",
-      time: "12:00",
-      message: "Hello? Are you available tonight?",
-    },
-    {
-      name: "Lalaine",
-      time: "yesterday",
-      message: "I'm thingking of resigning",
-    },
-    { name: "Princess", time: "1 day ago", message: "I found a job :)" },
-    {
-      name: "Charm",
-      time: "1 day ago",
-      message: "Can you me some chocolates?",
-    },
-    {
-      name: "Garen",
-      time: "1 day ago",
-      message: "I'm the bravest of all kind",
-    },
-  ];
+import useAllUsersData from "../hooks/useAllUsersData";
+import { auth } from "../firebase/firebase";
+
+const Conversation = ({ searchQuery }) => {
+  const data = useAllUsersData();
+
+  const filteredData = data.filter(
+    (item) =>
+      item.id !== auth.currentUser.uid &&
+      item.name.toLowerCase().includes(searchQuery.toLowerCase().trim())
+  );
 
   return (
     <div className="p-1">
-      {data.map((item, index) => (
+      {filteredData.length === 0 && (
+        <div className="text-gray-400 text-center mt-5">No user found</div>
+      )}
+      {filteredData.map((item, index) => (
         <ConversationItem
-          message={item.message}
-          time={item.time}
+          key={index}
+          message="Hey there! Are you finish creating the chat app?"
+          time="just now"
           name={item.name}
-          active={item.active}
+          active={true}
         />
       ))}
     </div>

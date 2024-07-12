@@ -1,11 +1,12 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
+import { getDatabase } from "firebase/database";
 
 // Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyCiQsP2xdm1xD0tSB-OZmN1F8qYiZs-Pis",
   authDomain: "realtime-chat-app-8c3df.firebaseapp.com",
-  databaseUrl: "https://realtime-chat-app-8c3df.firebaseio.com",
+  databaseUrl: "https://realtime-chat-app-8c3df-default-rtdb.firebaseio.com/",
   projectId: "realtime-chat-app-8c3df",
   storageBucket: "realtime-chat-app-8c3df.appspot.com",
   messagingSenderId: "49993470784",
@@ -16,5 +17,6 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const database = getDatabase(app);
 
-export { auth };
+export { auth, database };

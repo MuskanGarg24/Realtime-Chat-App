@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { doCreateUserWithEmailAndPassword } from "../firebase/auth";
+import { createUser } from "../firebase/users";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -23,6 +24,8 @@ const Register = () => {
         data.password
       );
       console.log(response);
+      createUser(response.user.uid, data.name, data.email);
+      console.log("User created successfully in Firebase realtime database");
       navigate("/");
     } catch (error) {
       setError(error.message);
