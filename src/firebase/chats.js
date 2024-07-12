@@ -72,16 +72,23 @@ export const createMessageNodeBetweenTwoUsers = async (
   userId1,
   userId2,
   text,
-  timestamp
+  timestamp,
+  isDelivered = false
 ) => {
   const chatId1 = `${userId1}_${userId2}`;
   const chatId2 = `${userId2}_${userId1}`;
+
+  const messageStatus = {
+    isDelivered: isDelivered,
+    isRead: false,
+  };
 
   const messageData = {
     from: userId1,
     to: userId2,
     text: text,
     timestamp: timestamp,
+    messageStatus: messageStatus,
   };
 
   const messageRef1 = ref(database, `messages/${chatId1}`);
@@ -117,5 +124,34 @@ export const getMessagesBetweenTwoUsers = async (userId1, userId2) => {
     return snapshot2.val();
   } else {
     return {};
+  }
+};
+
+// Update the status of read and delivered messages
+export const updateMessageStatus = async (
+  userId1,
+  userId2,
+  messageId,
+  status
+) => {
+  const chatId1 = `${userId1}_${userId2}`;
+  const chatId2 = `${userId2}_${userId1}`;
+
+  const messageRef1 = ref(database, `messages/${chatId1}/${messageId}`);
+  const messageRef2 = ref(database, `messages/${chatId2}/${messageId}`);
+
+  const snapshot1 = await get(messageRef1);
+  const snapshot2 = await get(messageRef2);
+
+  if (snapshot1.exists()) {
+    update(messageRef1, {
+      messageStatus: status,
+    });
+  } else if (snapshot2.exists()) {
+    update(messageRef2, {
+      messageStatus: status,
+    });
+  } else {
+    console.log("Message does not exist between these users.");
   }
 };

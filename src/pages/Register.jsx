@@ -24,7 +24,7 @@ const Register = () => {
         data.password
       );
       console.log(response);
-      createUser(response.user.uid, data.name, data.email);
+      createUser(response.user.uid, data.name, data.email, true);
       console.log("User created successfully in Firebase realtime database");
       navigate("/");
     } catch (error) {

@@ -5,7 +5,6 @@ import useUserData from "../hooks/useUserData";
 import { createChatBetweenTwoUsers } from "../firebase/chats";
 
 const Chat = () => {
-  
   const userData = useUserData();
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -48,7 +47,10 @@ const Chat = () => {
           </div>
         </div>
         <div className="flex-grow  h-screen p-2 rounded-md">
-          <Messages selectedUser={selectedUser} />
+          <Messages
+            selectedUser={selectedUser}
+            isOnline={selectedUser?.isOnline}
+          />
         </div>
       </div>
     </div>

@@ -6,7 +6,7 @@ const useUserData = () => {
 
   const [userData, setUserData] = useState(null);
 
-  const userId = auth.currentUser.uid;
+  const userId = auth.currentUser?.uid;
 
   useEffect(() => {
     const fetchUserData = async () => {

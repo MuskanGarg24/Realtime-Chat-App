@@ -1,29 +1,38 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import useUserData from "../hooks/useUserData";
 import {
   updateChatBetweenTwoUsers,
   createMessageNodeBetweenTwoUsers,
+  updateMessageStatus,
 } from "../firebase/chats";
 import useMessagesData from "../hooks/useMessagesData";
+import sent from "../assets/singleTick.png";
+import delivered from "../assets/doubleTick.png";
+import read from "../assets/read.png";
 
-const Messages = ({ selectedUser }) => {
-  
+const Messages = ({ selectedUser, isOnline }) => {
   const [inputMessage, setInputMessage] = useState("");
+
   const loggedInUser = useUserData();
   const loggedInUserId = loggedInUser?.id;
   const selectedUserId = selectedUser?.id;
-  const messages = useMessagesData(loggedInUserId, selectedUserId);
+  const messagesData = useMessagesData(loggedInUserId, selectedUserId);
+
+  const [messages, setMessages] = useState([]);
 
   const handleMessageSend = async () => {
     if (!selectedUser || !loggedInUserId || inputMessage.trim() === "") return;
 
     const timestamp = new Date().toISOString();
 
+    const isDelivered = selectedUser?.isOnline;
+
     await createMessageNodeBetweenTwoUsers(
       loggedInUserId,
       selectedUserId,
       inputMessage,
-      timestamp
+      timestamp,
+      isDelivered
     );
 
     await updateChatBetweenTwoUsers(
@@ -35,6 +44,23 @@ const Messages = ({ selectedUser }) => {
 
     setInputMessage("");
   };
+
+  useEffect(() => {
+    if (messagesData) {
+      const formattedMessages = Object.entries(messagesData);
+      if (isOnline) {
+        formattedMessages.forEach(([messageId, message]) => {
+          if (!message.messageStatus?.isDelivered) {
+            updateMessageStatus(loggedInUserId, selectedUserId, messageId, {
+              ...message.messageStatus,
+              isDelivered: true,
+            });
+          }
+        });
+      }
+      setMessages(formattedMessages.map(([_, message]) => message));
+    }
+  }, [messagesData, isOnline]);
 
   return (
     <>
@@ -70,8 +96,14 @@ const Messages = ({ selectedUser }) => {
                   {selectedUser.name}
                 </div>
                 <div className="flex items-center">
-                  <div className="w-2 h-2 bg-green-300 rounded-full"></div>
-                  <div className="text-xs text-gray-50 ml-1">Online</div>
+                  {isOnline ? (
+                    <div className="bg-green-500 w-3 h-3 rounded-full"></div>
+                  ) : (
+                    <div className="bg-gray-400 w-3 h-3 rounded-full"></div>
+                  )}
+                  <div className="text-xs text-gray-50 ml-1">
+                    {isOnline ? "Online" : "Offline"}
+                  </div>
                 </div>
               </div>
               <div className="p-2 text-white cursor-pointer hover:bg-purple-500 rounded-full">
@@ -113,11 +145,23 @@ const Messages = ({ selectedUser }) => {
                 >
                   <div className="p-2">
                     <div className="text-gray-200">{msg.text}</div>
-                    <div className="text-xs text-gray-400">
-                      {new Date(msg.timestamp).toLocaleTimeString([], {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
+                    <div className="text-xs text-gray-400 flex justify-between mt-2">
+                      <p>
+                        {new Date(msg.timestamp).toLocaleTimeString([], {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </p>
+                      {msg.from === loggedInUserId && (
+                        <img
+                          src={
+                            msg.messageStatus?.isDelivered ? delivered : sent
+                          }
+                          alt="status"
+                          width={20}
+                          className="mr-1"
+                        />
+                      )}
                     </div>
                   </div>
                 </div>

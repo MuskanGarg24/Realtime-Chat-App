@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { getMessagesBetweenTwoUsers } from "../firebase/chats";
 
 const useMessagesData = (loggedInUserId, selectedUserId) => {
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState(null);
 
   useEffect(() => {
     const fetchMessages = async () => {
@@ -10,10 +10,7 @@ const useMessagesData = (loggedInUserId, selectedUserId) => {
         loggedInUserId,
         selectedUserId
       );
-      const formattedMessages = getAllMessages
-        ? Object.values(getAllMessages)
-        : [];
-      setMessages(formattedMessages);
+      setMessages(getAllMessages);
     };
     fetchMessages();
   }, [loggedInUserId, selectedUserId]);

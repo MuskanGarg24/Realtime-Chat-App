@@ -1,11 +1,12 @@
 import { database } from "./firebase";
 import { ref, set, get, child } from "firebase/database";
 
-export const createUser = (userId, name, email) => {
+export const createUser = (userId, name, email, isOnline) => {
   set(ref(database, "users/" + userId), {
     id: userId,
     name: name,
     email: email,
+    isOnline: isOnline,
   });
 };
 

@@ -11,6 +11,7 @@ const useAllUsersData = () => {
         id: key,
         name: users[key].name,
         email: users[key].email,
+        isOnline: users[key].isOnline,
       }));
       setData(formattedUsers);
     };

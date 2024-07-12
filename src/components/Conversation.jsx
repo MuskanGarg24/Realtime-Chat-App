@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import ConversationItem from "./ConversationItem";
 import useAllUsersData from "../hooks/useAllUsersData";
 import useUserData from "../hooks/useUserData";
@@ -17,6 +17,15 @@ const Conversation = ({ searchQuery, selectedUser, onUserSelect }) => {
       item.name.toLowerCase().includes(searchQuery.toLowerCase().trim())
   );
 
+  const [lastMessage, setLastMessage] = useState(null);
+
+  useEffect(() => {
+    if (messages) {
+      const formattedMessages = Object.entries(messages);
+      setLastMessage(formattedMessages[formattedMessages.length - 1]);
+    }
+  }, [messages]);
+
   return (
     <div className="p-1">
       {filteredData.length === 0 && (
@@ -25,15 +34,17 @@ const Conversation = ({ searchQuery, selectedUser, onUserSelect }) => {
       {filteredData.map((item, index) => (
         <div onClick={() => onUserSelect(item)} key={index}>
           <ConversationItem
-            message={messages[messages.length - 1]?.text}
-            time={new Date(
-              messages[messages.length - 1]?.timestamp
-            ).toLocaleTimeString([], {
+            message={lastMessage?.[1]?.text}
+            time={new Date(lastMessage?.[1]?.timestamp).toLocaleTimeString([], {
               hour: "2-digit",
               minute: "2-digit",
             })}
             name={item.name}
-            active={true}
+            active={selectedUser?.isOnline}
+            messageStatus={lastMessage?.[1]?.messageStatus}
+            messageStatusCheckDisplay={
+              loggedInUserId === lastMessage?.[1]?.from
+            }
           />
         </div>
       ))}
