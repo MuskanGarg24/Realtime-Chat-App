@@ -3,6 +3,7 @@ import { ref, set, get, child } from "firebase/database";
 
 export const createUser = (userId, name, email) => {
   set(ref(database, "users/" + userId), {
+    id: userId,
     name: name,
     email: email,
   });

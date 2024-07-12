@@ -2,14 +2,22 @@ import React, { useState } from "react";
 import Conversation from "./Conversation";
 import Messages from "./Messages";
 import useUserData from "../hooks/useUserData";
+import { createChatBetweenTwoUsers } from "../firebase/chats";
 
 const Chat = () => {
+  
   const userData = useUserData();
 
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedUser, setSelectedUser] = useState(null);
 
   const handleSearch = (e) => {
     setSearchQuery(e.target.value);
+  };
+
+  const handleUserSelect = (user) => {
+    setSelectedUser(user);
+    createChatBetweenTwoUsers(userData.id, user.id, "", Date.now());
   };
 
   return (
@@ -32,11 +40,15 @@ const Chat = () => {
             <div className="text-lg font-semibol text-gray-600 dark:text-gray-200 p-3">
               Recent
             </div>
-            <Conversation searchQuery={searchQuery} />
+            <Conversation
+              searchQuery={searchQuery}
+              selectedUser={selectedUser}
+              onUserSelect={handleUserSelect}
+            />
           </div>
         </div>
         <div className="flex-grow  h-screen p-2 rounded-md">
-          <Messages />
+          <Messages selectedUser={selectedUser} />
         </div>
       </div>
     </div>
