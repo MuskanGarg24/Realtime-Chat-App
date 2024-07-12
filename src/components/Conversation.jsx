@@ -26,6 +26,14 @@ const Conversation = ({ searchQuery, selectedUser, onUserSelect }) => {
     }
   }, [messages]);
 
+  const lastMessageText = lastMessage?.[1]?.text ? lastMessage?.[1]?.text : "";
+  const lastMessageTimestamp = lastMessage?.[1]?.timestamp
+    ? new Date(lastMessage?.[1]?.timestamp).toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      })
+    : "";
+
   return (
     <div className="p-1">
       {filteredData.length === 0 && (
@@ -34,11 +42,8 @@ const Conversation = ({ searchQuery, selectedUser, onUserSelect }) => {
       {filteredData.map((item, index) => (
         <div className="mt-3" onClick={() => onUserSelect(item)} key={index}>
           <ConversationItem
-            message={lastMessage?.[1]?.text}
-            time={new Date(lastMessage?.[1]?.timestamp).toLocaleTimeString([], {
-              hour: "2-digit",
-              minute: "2-digit",
-            })}
+            message={lastMessageText}
+            time={lastMessageTimestamp}
             name={item.name}
             active={selectedUser?.isOnline}
             messageStatus={lastMessage?.[1]?.messageStatus}

@@ -13,7 +13,7 @@ const useMessagesData = (loggedInUserId, selectedUserId) => {
       setMessages(getAllMessages);
     };
     fetchMessages();
-  }, [loggedInUserId, selectedUserId]);
+  }, [loggedInUserId, selectedUserId, messages]);
 
   return messages;
 };
