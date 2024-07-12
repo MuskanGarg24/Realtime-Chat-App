@@ -1,5 +1,5 @@
 import { database } from "./firebase";
-import { ref, set, get, update } from "firebase/database";
+import { ref, set, get, update, push } from "firebase/database";
 
 // Create a chat node between two users
 export const createChatBetweenTwoUsers = async (
@@ -19,7 +19,6 @@ export const createChatBetweenTwoUsers = async (
   const snapshot2 = await get(chatRef2);
 
   if (snapshot1.exists() || snapshot2.exists()) {
-    console.log("Chat already exists between these users.");
     return;
   }
 
@@ -65,5 +64,58 @@ export const updateChatBetweenTwoUsers = async (
     });
   } else {
     console.log("Chat does not exist between these users.");
+  }
+};
+
+// Create a new message node between two users
+export const createMessageNodeBetweenTwoUsers = async (
+  userId1,
+  userId2,
+  text,
+  timestamp
+) => {
+  const chatId1 = `${userId1}_${userId2}`;
+  const chatId2 = `${userId2}_${userId1}`;
+
+  const messageData = {
+    from: userId1,
+    to: userId2,
+    text: text,
+    timestamp: timestamp,
+  };
+
+  const messageRef1 = ref(database, `messages/${chatId1}`);
+  const messageRef2 = ref(database, `messages/${chatId2}`);
+
+  // Check if either message node exists
+  const snapshot1 = await get(messageRef1);
+  const snapshot2 = await get(messageRef2);
+
+  if (snapshot1.exists()) {
+    await push(messageRef1, messageData);
+  } else if (snapshot2.exists()) {
+    await push(messageRef2, messageData);
+  } else {
+    await push(messageRef1, messageData);
+  }
+};
+
+// Get all messages between two users
+export const getMessagesBetweenTwoUsers = async (userId1, userId2) => {
+  const chatId1 = `${userId1}_${userId2}`;
+  const chatId2 = `${userId2}_${userId1}`;
+
+  const messageRef1 = ref(database, `messages/${chatId1}`);
+  const messageRef2 = ref(database, `messages/${chatId2}`);
+
+  const snapshot1 = await get(messageRef1);
+  const snapshot2 = await get(messageRef2);
+
+  if (snapshot1.exists()) {
+    return snapshot1.val();
+  } else if (snapshot2.exists()) {
+    return snapshot2.val();
+  } else {
+    return {};
   }
 };

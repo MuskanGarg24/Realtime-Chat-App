@@ -1,21 +1,34 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import useUserData from "../hooks/useUserData";
-import { updateChatBetweenTwoUsers } from "../firebase/chats";
+import {
+  updateChatBetweenTwoUsers,
+  createMessageNodeBetweenTwoUsers,
+} from "../firebase/chats";
+import useMessagesData from "../hooks/useMessagesData";
 
 const Messages = ({ selectedUser }) => {
-
+  
   const [inputMessage, setInputMessage] = useState("");
   const loggedInUser = useUserData();
   const loggedInUserId = loggedInUser?.id;
+  const selectedUserId = selectedUser?.id;
+  const messages = useMessagesData(loggedInUserId, selectedUserId);
 
   const handleMessageSend = async () => {
-    if (inputMessage.trim() === "") return;
+    if (!selectedUser || !loggedInUserId || inputMessage.trim() === "") return;
 
     const timestamp = new Date().toISOString();
 
+    await createMessageNodeBetweenTwoUsers(
+      loggedInUserId,
+      selectedUserId,
+      inputMessage,
+      timestamp
+    );
+
     await updateChatBetweenTwoUsers(
       loggedInUserId,
-      selectedUser.id,
+      selectedUserId,
       inputMessage,
       timestamp
     );
@@ -80,29 +93,40 @@ const Messages = ({ selectedUser }) => {
             </div>
           </div>
           <div className="w-full flex-grow bg-gray-100 dark:bg-gray-900 my-2 p-2 overflow-y-auto">
-            <div className="flex justify-end">
-              <div className="flex items-end w-3/4 bg-purple-500 dark:bg-gray-800 m-1 rounded-xl rounded-br-none sm:w-3/4 max-w-xl md:w-auto">
-                <div className="p-2">
-                  <div className="text-gray-200 ">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                    do eiusmod tempor incididunt ut labore et dolore magna
-                    aliqua. Ut enim ad minim veniam
+            {messages.map((msg, index) => (
+              <div
+                key={index}
+                className={`flex ${
+                  msg.from === loggedInUserId ? "justify-end" : "justify-start"
+                }`}
+              >
+                <div
+                  className={`flex items-end w-3/4 ${
+                    msg.from === loggedInUserId
+                      ? "bg-purple-500"
+                      : "bg-purple-300"
+                  } dark:bg-gray-800 m-1 rounded-xl ${
+                    msg.from === loggedInUserId
+                      ? "rounded-br-none"
+                      : "rounded-bl-none"
+                  } sm:w-3/4 max-w-xl md:w-auto`}
+                >
+                  <div className="p-2">
+                    <div className="text-gray-200">{msg.text}</div>
+                    <div className="text-xs text-gray-400">
+                      {new Date(msg.timestamp).toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div className="flex items-end w-3/4">
-              <div className="p-3 bg-purple-300 dark:bg-gray-800 mx-3 my-1 rounded-2xl rounded-bl-none sm:w-3/4 md:w-3/6">
-                <div className="text-gray-700 dark:text-gray-200">
-                  Hello po ang pogi niyo :)
-                </div>
-                <div className="text-xs text-gray-400">just now</div>
-              </div>
-            </div>
+            ))}
           </div>
-          <div className="h-15  p-3 rounded-xl rounded-tr-none rounded-tl-none bg-gray-100 dark:bg-gray-800">
+          <div className="h-15 p-3 rounded-xl rounded-tr-none rounded-tl-none bg-gray-100 dark:bg-gray-800">
             <div className="flex items-center">
-              <div className="p-2 text-gray-600 dark:text-gray-200 ">
+              <div className="p-2 text-gray-600 dark:text-gray-200">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-6 w-6"
@@ -120,14 +144,14 @@ const Messages = ({ selectedUser }) => {
               </div>
               <div className="search-chat flex flex-grow p-2">
                 <input
-                  className="input text-gray-700 dark:text-gray-200 text-sm p-5 focus:outline-none bg-gray-100 dark:bg-gray-800  flex-grow rounded-l-md"
+                  className="input text-gray-700 dark:text-gray-200 text-sm p-5 focus:outline-none bg-gray-100 dark:bg-gray-800 flex-grow rounded-l-md"
                   type="text"
                   placeholder="Type your message ..."
                   value={inputMessage}
                   onChange={(e) => setInputMessage(e.target.value)}
                 />
                 <div
-                  className="bg-gray-100 dark:bg-gray-800 dark:text-gray-200  flex justify-center items-center pr-3 text-gray-400 rounded-r-md cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700"
+                  className="bg-gray-100 dark:bg-gray-800 dark:text-gray-200 flex justify-center items-center pr-3 text-gray-400 rounded-r-md cursor-pointer"
                   onClick={handleMessageSend}
                 >
                   <svg
