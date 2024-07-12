@@ -33,13 +33,12 @@ const Register = () => {
   };
 
   return (
-    <div className="w-[30vw] mx-auto">
-      <div>
-        <h1>Sign Up</h1>
-        <p>Create an account to start chatting with your friends.</p>
+    <div className="w-[90vw] sm:w-[70vw] md:w-[30vw] mx-auto">
+      <div className="mt-20 sm:mt-28">
+        <h1 className="text-3xl font-bold text-center">SIGN UP</h1>
       </div>
-      <form onSubmit={handleUserSignUp}>
-        <label className="input input-bordered flex items-center gap-2">
+      <form className="mt-9" onSubmit={handleUserSignUp}>
+        <label className="input input-bordered flex items-center gap-2 my-5">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 16 16"
@@ -50,13 +49,13 @@ const Register = () => {
           </svg>
           <input
             type="text"
-            className="grow"
+            className="grow text-lg"
             placeholder="Name"
             value={data.name}
             onChange={(e) => setData({ ...data, name: e.target.value })}
           />
         </label>
-        <label className="input input-bordered flex items-center gap-2">
+        <label className="input input-bordered flex items-center gap-2 my-5">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 16 16"
@@ -68,13 +67,13 @@ const Register = () => {
           </svg>
           <input
             type="text"
-            className="grow"
+            className="grow text-lg"
             placeholder="Email"
             value={data.email}
             onChange={(e) => setData({ ...data, email: e.target.value })}
           />
         </label>
-        <label className="input input-bordered flex items-center gap-2">
+        <label className="input input-bordered flex items-center gap-2 my-5">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 16 16"
@@ -89,22 +88,28 @@ const Register = () => {
           </svg>
           <input
             type="password"
-            className="grow"
+            className="grow text-lg"
             placeholder="Password"
             value={data.password}
             onChange={(e) => setData({ ...data, password: e.target.value })}
           />
         </label>
       </form>
-      <div>
-        <button onClick={handleUserSignUp}>SignUp</button>
-      </div>
-      {error && <p className="text-red-700">{error}</p>}
-      <div>
-        <p>
-          Already have an account? <Link to="/login">Login</Link>
-        </p>
-      </div>
+      <button
+        className="w-full bg-[#6a85fa] px-5 py-3 rounded-xl text-lg text-white font-bold mt-2 hover:opacity-90"
+        onClick={handleUserSignUp}
+      >
+        Create Account
+      </button>
+      {error && (
+        <p className="text-red-700 text-lg my-5 text-center">{error}</p>
+      )}
+      <p className="mt-5 text-lg text-center">
+        Already have an account?{" "}
+        <Link to="/login" className="font-bold">
+          Login
+        </Link>
+      </p>
     </div>
   );
 };

@@ -35,13 +35,13 @@ const Login = () => {
   };
 
   return (
-    <div className="w-[30vw] mx-auto">
+    <div className="w-[90vw] sm:w-[70vw] md:w-[30vw] mx-auto">
       {userLoggedIn && <Navigate to="/" replace={true} />}
-      <div>
-        <h1>Sign In</h1>
+      <div className="mt-20 sm:mt-28">
+        <h1 className="text-3xl font-bold text-center">LOGIN</h1>
       </div>
-      <form onSubmit={handleUserSignIn}>
-        <label className="input input-bordered flex items-center gap-2">
+      <form className="mt-9" onSubmit={handleUserSignIn}>
+        <label className="input input-bordered flex items-center gap-2 my-5">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 16 16"
@@ -53,13 +53,13 @@ const Login = () => {
           </svg>
           <input
             type="text"
-            className="grow"
+            className="grow text-lg"
             placeholder="Email"
             value={data.email}
             onChange={(e) => setData({ ...data, email: e.target.value })}
           />
         </label>
-        <label className="input input-bordered flex items-center gap-2">
+        <label className="input input-bordered flex items-center gap-2 my-5">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 16 16"
@@ -74,22 +74,28 @@ const Login = () => {
           </svg>
           <input
             type="password"
-            className="grow"
+            className="grow text-lg"
             placeholder="Password"
             value={data.password}
             onChange={(e) => setData({ ...data, password: e.target.value })}
           />
         </label>
       </form>
-      <div>
-        <button onClick={handleUserSignIn}>Sign In</button>
-      </div>
-      {error && <p className="text-red-700">{error}</p>}
-      <div>
-        <p>
-          Don't have an account? <Link to="/register">Sign Up</Link>
-        </p>
-      </div>
+      <button
+        className="w-full bg-[#6a85fa] px-5 py-3 rounded-xl text-lg text-white font-bold mt-2 hover:opacity-90"
+        onClick={handleUserSignIn}
+      >
+        Login
+      </button>
+      {error && (
+        <p className="text-red-700 text-lg my-5 text-center">{error}</p>
+      )}
+      <p className="mt-5 text-lg text-center">
+        Don't have an account?{" "}
+        <Link to="/register" className="font-bold">
+          Sign Up
+        </Link>
+      </p>
     </div>
   );
 };

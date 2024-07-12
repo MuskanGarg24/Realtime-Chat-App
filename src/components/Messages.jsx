@@ -76,7 +76,7 @@ const Messages = ({ selectedUser, isOnline }) => {
     <>
       {selectedUser ? (
         <div className="flex-grow h-full flex flex-col">
-          <div className="w-full h-15 p-1 bg-purple-600 dark:bg-gray-800 shadow-md rounded-xl rounded-bl-none rounded-br-none">
+          <div className="w-full h-15 p-1 bg-[#1e1f2c] shadow-md rounded-xl rounded-bl-none rounded-br-none">
             <div className="flex p-2 align-middle items-center">
               <div className="p-2 md:hidden rounded-full mr-1 hover:bg-purple-500 text-white">
                 <svg
@@ -101,40 +101,19 @@ const Messages = ({ selectedUser, isOnline }) => {
                   alt="avatar"
                 />
               </div>
-              <div className="flex-grow p-2">
-                <div className="text-md text-gray-50 font-semibold">
+              <div className="flex-grow px-4">
+                <div className="text-lg text-gray-50 font-semibold">
                   {selectedUser.name}
                 </div>
-                <div className="flex items-center">
-                  {isOnline ? (
-                    <div className="bg-green-500 w-3 h-3 rounded-full"></div>
-                  ) : (
-                    <div className="bg-gray-400 w-3 h-3 rounded-full"></div>
-                  )}
-                  <div className="text-xs text-gray-50 ml-1">
+                <div className="flex items-center mt-1">
+                  <div className="text-xs text-gray-50">
                     {isOnline ? "Online" : "Offline"}
                   </div>
                 </div>
               </div>
-              <div className="p-2 text-white cursor-pointer hover:bg-purple-500 rounded-full">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"
-                  />
-                </svg>
-              </div>
             </div>
           </div>
-          <div className="w-full flex-grow bg-gray-100 dark:bg-gray-900 my-2 p-2 overflow-y-auto">
+          <div className="w-full flex-grow bg-[#252837] my-2 p-2 overflow-y-auto">
             {messages.map((msg, index) => (
               <div
                 key={index}
@@ -145,17 +124,17 @@ const Messages = ({ selectedUser, isOnline }) => {
                 <div
                   className={`flex items-end w-3/4 ${
                     msg.from === loggedInUserId
-                      ? "bg-purple-500"
-                      : "bg-purple-300"
+                      ? "bg-[#1e1f2c]"
+                      : "bg-[#6a85fa]"
                   } dark:bg-gray-800 m-1 rounded-xl ${
                     msg.from === loggedInUserId
                       ? "rounded-br-none"
                       : "rounded-bl-none"
                   } sm:w-3/4 max-w-xl md:w-auto`}
                 >
-                  <div className="p-2">
-                    <div className="text-gray-200">{msg.text}</div>
-                    <div className="text-xs text-gray-400 flex justify-between mt-2">
+                  <div className="px-3 py-2">
+                    <div className="text-white text-md">{msg.text}</div>
+                    <div className="text-xs text-gray-400 flex justify-between mt-1">
                       <p>
                         {new Date(msg.timestamp).toLocaleTimeString([], {
                           hour: "2-digit",
@@ -182,39 +161,23 @@ const Messages = ({ selectedUser, isOnline }) => {
               </div>
             ))}
           </div>
-          <div className="h-15 p-3 rounded-xl rounded-tr-none rounded-tl-none bg-gray-100 dark:bg-gray-800">
+          <div className="h-15 px-2 rounded-xl bg-gray-100">
             <div className="flex items-center">
-              <div className="p-2 text-gray-600 dark:text-gray-200">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-              </div>
-              <div className="search-chat flex flex-grow p-2">
+              <div className="flex flex-grow p-2">
                 <input
-                  className="input text-gray-700 dark:text-gray-200 text-sm p-5 focus:outline-none bg-gray-100 dark:bg-gray-800 flex-grow rounded-l-md"
+                  className="input text-lg px-5 focus:outline-none bg-gray-100 flex-grow rounded-lg"
                   type="text"
                   placeholder="Type your message ..."
                   value={inputMessage}
                   onChange={(e) => setInputMessage(e.target.value)}
                 />
                 <div
-                  className="bg-gray-100 dark:bg-gray-800 dark:text-gray-200 flex justify-center items-center pr-3 text-gray-400 rounded-r-md cursor-pointer"
+                  className="bg-gray-100 flex justify-center items-center text-gray-400 cursor-pointer px-5"
                   onClick={handleMessageSend}
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6"
+                    className="h-8 w-8"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -234,7 +197,9 @@ const Messages = ({ selectedUser, isOnline }) => {
       ) : (
         <div>
           <div className="flex items-center justify-center h-full">
-            <div className="text-center">Select a user to chat</div>
+            <div className="text-center text-white text-3xl mt-60">
+              Select a chat to start conversation
+            </div>
           </div>
         </div>
       )}

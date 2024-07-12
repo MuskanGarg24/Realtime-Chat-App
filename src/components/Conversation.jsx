@@ -32,7 +32,7 @@ const Conversation = ({ searchQuery, selectedUser, onUserSelect }) => {
         <div className="text-gray-400 text-center mt-5">No user found</div>
       )}
       {filteredData.map((item, index) => (
-        <div onClick={() => onUserSelect(item)} key={index}>
+        <div className="mt-3" onClick={() => onUserSelect(item)} key={index}>
           <ConversationItem
             message={lastMessage?.[1]?.text}
             time={new Date(lastMessage?.[1]?.timestamp).toLocaleTimeString([], {
