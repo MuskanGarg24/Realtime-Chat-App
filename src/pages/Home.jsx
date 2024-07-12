@@ -1,7 +1,7 @@
 import React from "react";
-import Navbar from "../components/Navbar";
 import { useAuth } from "../context/authContext";
 import { Navigate } from "react-router-dom";
+import Chat from "../components/Chat";
 
 const Home = () => {
   const { userLoggedIn } = useAuth();
@@ -9,7 +9,7 @@ const Home = () => {
   return (
     <>
       {!userLoggedIn && <Navigate to="/login" replace={true} />}
-      <Navbar />
+      <Chat />
     </>
   );
 };
