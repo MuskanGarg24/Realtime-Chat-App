@@ -1,5 +1,5 @@
 import { database } from "./firebase";
-import { ref, set, get, child } from "firebase/database";
+import { ref, set, get, child, update } from "firebase/database";
 
 export const createUser = (userId, name, email, isOnline) => {
   set(ref(database, "users/" + userId), {
@@ -22,6 +22,18 @@ export const readUser = (userId) => {
     .catch((error) => {
       console.error(error);
     });
+};
+
+export const updateUser = async (userId, isOnline) => {
+  const userRef = ref(database, `users/${userId}`);
+  const snapshot = await get(userRef);
+  if (snapshot.exists()) {
+    update(userRef, {
+      isOnline: isOnline,
+    });
+  } else {
+    console.log("No data available");
+  }
 };
 
 export const getAllUsers = () => {

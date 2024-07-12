@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate, Link, Navigate } from "react-router-dom";
 import { doSignInWithEmailAndPassword } from "../firebase/auth";
 import { useAuth } from "../context/authContext";
+import { updateUser } from "../firebase/users";
 
 const Login = () => {
   const { userLoggedIn } = useAuth();
@@ -25,6 +26,7 @@ const Login = () => {
         data.password
       );
       console.log(response);
+      updateUser(response.user.uid, true);
       navigate("/");
     } catch (error) {
       setError(error.message);

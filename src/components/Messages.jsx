@@ -72,8 +72,6 @@ const Messages = ({ selectedUser, isOnline }) => {
     }
   }, [messagesData, isOnline]);
 
-  console.log(messages);
-
   return (
     <>
       {selectedUser ? (
