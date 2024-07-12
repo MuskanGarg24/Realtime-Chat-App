@@ -56,11 +56,23 @@ const Messages = ({ selectedUser, isOnline }) => {
               isDelivered: true,
             });
           }
+          if (
+            loggedInUserId === message.to &&
+            selectedUserId === message.from &&
+            !message.messageStatus?.isRead
+          ) {
+            updateMessageStatus(loggedInUserId, selectedUserId, messageId, {
+              ...message.messageStatus,
+              isRead: true,
+            });
+          }
         });
       }
       setMessages(formattedMessages.map(([_, message]) => message));
     }
   }, [messagesData, isOnline]);
+
+  console.log(messages);
 
   return (
     <>
@@ -155,7 +167,11 @@ const Messages = ({ selectedUser, isOnline }) => {
                       {msg.from === loggedInUserId && (
                         <img
                           src={
-                            msg.messageStatus?.isDelivered ? delivered : sent
+                            msg.messageStatus?.isRead
+                              ? read
+                              : msg.messageStatus?.isDelivered
+                              ? delivered
+                              : sent
                           }
                           alt="status"
                           width={20}

@@ -45,7 +45,13 @@ const ConversationItem = ({
               {message}
               {messageStatusCheckDisplay && (
                 <img
-                  src={messageStatus?.isDelivered ? delivered : sent}
+                  src={
+                    messageStatus?.isRead
+                      ? read
+                      : messageStatus?.isDelivered
+                      ? delivered
+                      : sent
+                  }
                   alt="status"
                   width={20}
                 />
