@@ -1,8 +1,39 @@
-# React + Vite
+# One-to-One Chat App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Description
+This project is a One-to-One chat application built using Firebase Realtime Database. It allows users to chat in real-time with message status updates similar to WhatsApp.
 
-Currently, two official plugins are available:
+## Features
+- **Firebase Authentication**: Secure login using Firebase Authentication.
+- **Real-time Messaging**: Instant messaging between users.
+- **Message Status Updates**: 
+  - Single tick for sent messages.
+  - Double tick for delivered messages.
+  - Blue double tick for read messages.
+- **Active Users List**: Displays users currently online in real-time.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Deployment
+### Live Demo
+- [Live Demo](https://realtime-chat-app-8c3df.web.app/)
+
+### Source Code
+- [GitHub Repository](https://github.com/MuskanGarg24/Realtime-Chat-App)
+
+## Testing
+### Test Cases
+- Verify message status updates (sent, delivered, read).
+- Check real-time updating of active users list.
+
+### Video Recording
+- [Loom Video](https://www.loom.com)
+
+## Setup Instructions
+1. Clone the repository: `git clone https://github.com/MuskanGarg24/Realtime-Chat-App`
+2. Install dependencies: `npm install`
+3. Configure Firebase credentials.
+4. Run locally: `npm run dev`
+
+## Technologies Used
+- Firebase Realtime Database
+- Firebase Authentication
+- ReactJS
