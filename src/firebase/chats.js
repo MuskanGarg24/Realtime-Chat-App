@@ -67,6 +67,26 @@ export const updateChatBetweenTwoUsers = async (
   }
 };
 
+// Get last message and timestamp between two users
+export const getLastMessageBetweenTwoUsers = async (userId1, userId2) => {
+  const chatId1 = `${userId1}_${userId2}`;
+  const chatId2 = `${userId2}_${userId1}`;
+
+  const chatRef1 = ref(database, `chats/${chatId1}`);
+  const chatRef2 = ref(database, `chats/${chatId2}`);
+
+  const snapshot1 = await get(chatRef1);
+  const snapshot2 = await get(chatRef2);
+
+  if (snapshot1.exists()) {
+    return snapshot1.val();
+  } else if (snapshot2.exists()) {
+    return snapshot2.val();
+  } else {
+    return {};
+  }
+};
+
 // Create a new message node between two users
 export const createMessageNodeBetweenTwoUsers = async (
   userId1,

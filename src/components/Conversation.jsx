@@ -2,14 +2,12 @@ import React, { useState, useEffect } from "react";
 import ConversationItem from "./ConversationItem";
 import useAllUsersData from "../hooks/useAllUsersData";
 import useUserData from "../hooks/useUserData";
-import useMessagesData from "../hooks/useMessagesData";
+import { getLastMessageBetweenTwoUsers } from "../firebase/chats";
 
 const Conversation = ({ searchQuery, selectedUser, onUserSelect }) => {
   const data = useAllUsersData();
   const loggedInUserData = useUserData();
   const loggedInUserId = loggedInUserData?.id;
-  const selectedUserId = selectedUser?.id;
-  const messages = useMessagesData(loggedInUserId, selectedUserId);
 
   const filteredData = data.filter(
     (item) =>
@@ -17,38 +15,59 @@ const Conversation = ({ searchQuery, selectedUser, onUserSelect }) => {
       item.name.toLowerCase().includes(searchQuery.toLowerCase().trim())
   );
 
-  const [lastMessage, setLastMessage] = useState(null);
+  const [lastMessages, setLastMessages] = useState({});
+  const [onlineStatus, setOnlineStatus] = useState({});
 
   useEffect(() => {
-    if (messages) {
-      const formattedMessages = Object.entries(messages);
-      setLastMessage(formattedMessages[formattedMessages.length - 1]);
-    }
-  }, [messages]);
+    const fetchUserLastMessages = async () => {
+      const lastMessagesData = {};
+      const onlineStatusData = {};
+      for (const user of filteredData) {
+        const getMessages = await getLastMessageBetweenTwoUsers(
+          loggedInUserId,
+          user.id
+        );
+        lastMessagesData[user.id] = {
+          lastMessage: getMessages?.lastMessage,
+          timestamp: getMessages?.timestamp,
+        };
+        const isOnline = user.isOnline;
+        onlineStatusData[user.id] = isOnline;
+      }
+      setLastMessages(lastMessagesData);
+      setOnlineStatus(onlineStatusData);
+    };
 
-  const lastMessageText = lastMessage?.[1]?.text ? lastMessage?.[1]?.text : "";
-  const lastMessageTimestamp = lastMessage?.[1]?.timestamp
-    ? new Date(lastMessage?.[1]?.timestamp).toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-      })
-    : "";
+    if (filteredData.length > 0) {
+      fetchUserLastMessages();
+    }
+  }, [filteredData, loggedInUserId]);
 
   return (
     <div className="p-1">
       {filteredData.length === 0 && (
         <div className="text-gray-400 text-center mt-5">No user found</div>
       )}
-      {filteredData.map((item, index) => (
-        <div className="mt-3" onClick={() => onUserSelect(item)} key={index}>
+      {filteredData.map((item) => (
+        <div className="mt-3" onClick={() => onUserSelect(item)} key={item.id}>
           <ConversationItem
-            message={lastMessageText}
-            time={lastMessageTimestamp}
+            message={lastMessages[item.id]?.lastMessage}
+            time={
+              lastMessages[item.id]?.timestamp
+                ? new Date(lastMessages[item.id]?.timestamp).toLocaleTimeString(
+                    [],
+                    {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    }
+                  )
+                : ""
+            }
             name={item.name}
-            active={selectedUser?.isOnline}
-            messageStatus={lastMessage?.[1]?.messageStatus}
+            active={onlineStatus[item.id]}
+            messageStatus={lastMessages[item.id]?.messageStatus}
             messageStatusCheckDisplay={
-              loggedInUserId === lastMessage?.[1]?.from
+              loggedInUserId === lastMessages[item.id]?.from
             }
           />
         </div>
