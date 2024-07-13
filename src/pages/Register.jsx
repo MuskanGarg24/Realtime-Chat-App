@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { doCreateUserWithEmailAndPassword } from "../firebase/auth";
+import { doCreateUserWithEmailAndPassword, doSendEmailVerification } from "../firebase/auth";
 import { createUser } from "../firebase/users";
 
 const Register = () => {
@@ -24,6 +24,7 @@ const Register = () => {
         data.email,
         data.password
       );
+      doSendEmailVerification();
       createUser(response.user.uid, data.name, data.email, true);
       navigate("/");
     } catch (error) {
