@@ -24,9 +24,6 @@ This project is a One-to-One chat application built using Firebase Realtime Data
 - Verify message status updates (sent, delivered, read).
 - Check real-time updating of active users list.
 
-### Video Recording
-- [Loom Video](https://www.loom.com)
-
 ## Setup Instructions
 1. Clone the repository: `git clone https://github.com/MuskanGarg24/Realtime-Chat-App`
 2. Install dependencies: `npm install`
@@ -37,3 +34,4 @@ This project is a One-to-One chat application built using Firebase Realtime Data
 - Firebase Realtime Database
 - Firebase Authentication
 - ReactJS
+- Tailwind CSS
