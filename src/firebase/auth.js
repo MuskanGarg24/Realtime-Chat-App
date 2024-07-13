@@ -6,6 +6,7 @@ import {
 import { auth } from "./firebase";
 import { updateUser } from "./users";
 
+// Sign Up
 export const doCreateUserWithEmailAndPassword = async (email, password) => {
   try {
     return createUserWithEmailAndPassword(auth, email, password);
@@ -14,6 +15,8 @@ export const doCreateUserWithEmailAndPassword = async (email, password) => {
   }
 };
 
+
+// Sign In
 export const doSignInWithEmailAndPassword = async (email, password) => {
   try {
     return signInWithEmailAndPassword(auth, email, password);
@@ -22,11 +25,15 @@ export const doSignInWithEmailAndPassword = async (email, password) => {
   }
 };
 
+
+// Sign Out
 export const doSignOut = () => {
   updateUser(auth.currentUser.uid, false);
   return auth.signOut();
 };
 
+
+// Send Email Verification
 export const doSendEmailVerification = () => {
   return sendEmailVerification(auth.currentUser, {
     url: `${window.location.origin}`,

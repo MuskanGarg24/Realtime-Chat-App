@@ -1,25 +1,34 @@
 import React, { useEffect, useState } from "react";
+import sent from "../assets/singleTick.png";
+import delivered from "../assets/doubleTick.png";
+import read from "../assets/read.png";
+import useMessagesData from "../hooks/useMessagesData";
 import useUserData from "../hooks/useUserData";
 import {
   updateChatBetweenTwoUsers,
   createMessageNodeBetweenTwoUsers,
   updateMessageStatus,
 } from "../firebase/chats";
-import useMessagesData from "../hooks/useMessagesData";
-import sent from "../assets/singleTick.png";
-import delivered from "../assets/doubleTick.png";
-import read from "../assets/read.png";
 
 const Messages = ({ selectedUser, isOnline }) => {
+
+  //  Set the input message state
   const [inputMessage, setInputMessage] = useState("");
 
-  const loggedInUser = useUserData();
-  const loggedInUserId = loggedInUser?.id;
-  const selectedUserId = selectedUser?.id;
-  const messagesData = useMessagesData(loggedInUserId, selectedUserId);
-
+  // Set the messages state
   const [messages, setMessages] = useState([]);
 
+  // Fetch the logged in user data
+  const loggedInUser = useUserData();
+
+  // Get the logged in user id and selected user id
+  const loggedInUserId = loggedInUser?.id;
+  const selectedUserId = selectedUser?.id;
+
+  // Fetch the messages data
+  const messagesData = useMessagesData(loggedInUserId, selectedUserId);
+
+  // Function to handle the message send
   const handleMessageSend = async () => {
     if (!selectedUser || !loggedInUserId || inputMessage.trim() === "") return;
 
@@ -27,6 +36,7 @@ const Messages = ({ selectedUser, isOnline }) => {
 
     const isDelivered = selectedUser?.isOnline;
 
+    // Create a message node between two users
     await createMessageNodeBetweenTwoUsers(
       loggedInUserId,
       selectedUserId,
@@ -35,6 +45,7 @@ const Messages = ({ selectedUser, isOnline }) => {
       isDelivered
     );
 
+    // Update the chat between two users with the latest message
     await updateChatBetweenTwoUsers(
       loggedInUserId,
       selectedUserId,
@@ -45,17 +56,26 @@ const Messages = ({ selectedUser, isOnline }) => {
     setInputMessage("");
   };
 
+  // Update the message status
   useEffect(() => {
+
     if (messagesData) {
+
       const formattedMessages = Object.entries(messagesData);
+
       if (isOnline) {
+
         formattedMessages.forEach(([messageId, message]) => {
+
+          // Update the message status to delivered if the user is online
           if (!message.messageStatus?.isDelivered) {
             updateMessageStatus(loggedInUserId, selectedUserId, messageId, {
               ...message.messageStatus,
               isDelivered: true,
             });
           }
+
+          // Update the message status to read if the user is online and the message is not read
           if (
             loggedInUserId === message.to &&
             selectedUserId === message.from &&
@@ -66,8 +86,10 @@ const Messages = ({ selectedUser, isOnline }) => {
               isRead: true,
             });
           }
+          
         });
       }
+
       setMessages(formattedMessages.map(([_, message]) => message));
     }
   }, [messagesData, isOnline]);
@@ -78,7 +100,7 @@ const Messages = ({ selectedUser, isOnline }) => {
         <div className="flex-grow h-full flex flex-col">
           <div className="w-full h-15 p-1 bg-[#1e1f2c] shadow-md rounded-xl rounded-bl-none rounded-br-none">
             <div className="flex p-2 align-middle items-center">
-              <div className="p-2 md:hidden rounded-full mr-1 hover:bg-purple-500 text-white">
+              <div className="p-2 md:hidden rounded-full mr-1 text-white">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-6 w-6"

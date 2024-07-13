@@ -4,44 +4,57 @@ import useAllUsersData from "../hooks/useAllUsersData";
 import useUserData from "../hooks/useUserData";
 import { getLastMessageBetweenTwoUsers } from "../firebase/chats";
 
-const Conversation = ({ searchQuery, selectedUser, onUserSelect }) => {
-  const data = useAllUsersData();
-  const loggedInUserData = useUserData();
-  const loggedInUserId = loggedInUserData?.id;
+const Conversation = ({ searchQuery, onUserSelect }) => {
 
+  // Fetching all users data
+  const data = useAllUsersData();
+
+  // Fetching the logged in user data
+  const loggedInUserData = useUserData();
+
+  // Get the filtered data based on the search query
   const filteredData = data.filter(
     (item) =>
       item.id !== loggedInUserData?.id &&
       item.name.toLowerCase().includes(searchQuery.toLowerCase().trim())
   );
 
+  // State to store the last messages and online status
   const [lastMessages, setLastMessages] = useState({});
   const [onlineStatus, setOnlineStatus] = useState({});
 
+  // Fetch the last messages and online status
   useEffect(() => {
     const fetchUserLastMessages = async () => {
+
       const lastMessagesData = {};
       const onlineStatusData = {};
+
       for (const user of filteredData) {
         const getMessages = await getLastMessageBetweenTwoUsers(
-          loggedInUserId,
+          loggedInUserData?.id,
           user.id
         );
+
         lastMessagesData[user.id] = {
           lastMessage: getMessages?.lastMessage,
           timestamp: getMessages?.timestamp,
         };
+
         const isOnline = user.isOnline;
         onlineStatusData[user.id] = isOnline;
       }
+
       setLastMessages(lastMessagesData);
       setOnlineStatus(onlineStatusData);
+
     };
 
     if (filteredData.length > 0) {
       fetchUserLastMessages();
     }
-  }, [filteredData, loggedInUserId]);
+
+  }, [filteredData, loggedInUserData?.id]);
 
   return (
     <div className="p-1">
@@ -65,10 +78,6 @@ const Conversation = ({ searchQuery, selectedUser, onUserSelect }) => {
             }
             name={item.name}
             active={onlineStatus[item.id]}
-            messageStatus={lastMessages[item.id]?.messageStatus}
-            messageStatusCheckDisplay={
-              loggedInUserId === lastMessages[item.id]?.from
-            }
           />
         </div>
       ))}

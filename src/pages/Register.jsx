@@ -13,6 +13,7 @@ const Register = () => {
   });
   const [error, setError] = useState(null);
 
+  //  Handle user sign up
   const handleUserSignUp = async (e) => {
     e.preventDefault();
     if (!data.name || !data.email || !data.password) {
@@ -23,9 +24,7 @@ const Register = () => {
         data.email,
         data.password
       );
-      console.log(response);
       createUser(response.user.uid, data.name, data.email, true);
-      console.log("User created successfully in Firebase realtime database");
       navigate("/");
     } catch (error) {
       setError(error.message);

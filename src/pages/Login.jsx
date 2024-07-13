@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate, Link, Navigate } from "react-router-dom";
-import { doSignInWithEmailAndPassword } from "../firebase/auth";
 import { useAuth } from "../context/authContext";
+import { doSignInWithEmailAndPassword } from "../firebase/auth";
 import { updateUser } from "../firebase/users";
 
 const Login = () => {
+
+  // Get the userLoggedIn state
   const { userLoggedIn } = useAuth();
 
   const [data, setData] = useState({
@@ -15,6 +17,7 @@ const Login = () => {
 
   const navigate = useNavigate();
 
+  // Handle user sign in
   const handleUserSignIn = async (e) => {
     e.preventDefault();
     if (!data.email || !data.password) {
@@ -25,13 +28,12 @@ const Login = () => {
         data.email,
         data.password
       );
-      console.log(response);
       updateUser(response.user.uid, true);
       navigate("/");
     } catch (error) {
       setError(error.message);
-      console.log(error);
     }
+
   };
 
   return (

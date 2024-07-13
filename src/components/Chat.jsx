@@ -6,15 +6,22 @@ import { createChatBetweenTwoUsers } from "../firebase/chats";
 import { doSignOut } from "../firebase/auth";
 
 const Chat = () => {
+  
+  // Fetching the user data
   const userData = useUserData();
 
+  // State to store the search query
   const [searchQuery, setSearchQuery] = useState("");
+
+  // State to store the selected user
   const [selectedUser, setSelectedUser] = useState(null);
 
+  // Function to handle the search
   const handleSearch = (e) => {
     setSearchQuery(e.target.value);
   };
 
+  // Function to handle the user selection
   const handleUserSelect = (user) => {
     setSelectedUser(user);
     createChatBetweenTwoUsers(userData.id, user.id, "", Date.now());
@@ -25,7 +32,7 @@ const Chat = () => {
       <div className="flex bg-[#252837]">
         <div className="w-80 h-screen bg-[#252837] p-2 hidden md:block">
           <div className="h-full overflow-y-auto">
-            <div className="text-xl font-extrabold dark:text-gray-200 p-3 flex justify-between">
+            <div className="text-xl font-extrabold p-3 flex justify-between">
               <p className="text-white">
                 {userData ? userData.name : "Loading..."}
               </p>
@@ -45,7 +52,6 @@ const Chat = () => {
             <div className="text-lg font-semibold text-white p-3">Recent</div>
             <Conversation
               searchQuery={searchQuery}
-              selectedUser={selectedUser}
               onUserSelect={handleUserSelect}
             />
           </div>
